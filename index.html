@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Management System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #ffffff;
+            padding: 1rem;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header #branding h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        header nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        header nav ul li {
+            margin-left: 20px;
+        }
+
+        header .highlight, header .current a {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        header a {
+            color: #ffffff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        header a:hover {
+            color: #ffd700;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #2a5298;
+            color: #ffffff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: #1e3c72;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        #login-selection, .login-container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        #login-selection {
+            text-align: center;
+        }
+
+        #login-selection h2, .login-container h2 {
+            margin-bottom: 30px;
+            color: #1e3c72;
+        }
+
+        #login-selection .btn {
+            margin: 10px;
+            width: calc(100% - 20px);
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"],
+        .login-container input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .login-container input[type="submit"] {
+            background: #2a5298;
+            border: 0;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-container input[type="submit"]:hover {
+            background: #1e3c72;
+        }
+
+        .dashboard {
+            display: none;
+            width: 100%;
+            min-height: calc(100vh - 70px); /* Subtracting header height */
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .dashboard h2 {
+            color: #1e3c72;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: auto;
+            height: calc(100vh - 200px); /* Adjust based on your needs */
+        }
+
+        .dashboard-card h3 {
+            margin-bottom: 15px;
+            color: #2a5298;
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+
+        .project-details, .vacancy-details {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .add-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #45a049;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #2a5298;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1><span class="highlight">HR</span> Management System</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li class="current"><a href="#home">Home</a></li>
+                    <li><a href="#login">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div id="login-selection">
+            <h2>Welcome to HR Management</h2>
+            <button class="btn" onclick="showLogin('admin')">Admin Login</button>
+            <button class="btn" onclick="showLogin('employee')">Employee Login</button>
+        </div>
+
+        <div id="admin-login" class="login-container" style="display:none;">
+            <h2>Admin Login</h2>
+            <form onsubmit="return loginUser(event, 'admin')">
+                <input type="text" id="admin-username" placeholder="Username" required>
+                <input type="password" id="admin-password" placeholder="Password" required>
+                <input type="submit" value="Login" class="btn">
+            </form>
+        </div>
+
+        <div id="employee-login" class="login-container" style="display:none;">
+            <h2>Employee Login</h2>
+            <form onsubmit="return loginUser(event, 'employee')">
+                <input type="text" id="employee-username" placeholder="Username" required>
+                <input type="password" id="employee-password" placeholder="Password" required>
+                <input type="submit" value="Login" class="btn">
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-dashboard" class="dashboard">
+        <div class="dashboard-header">
+            <h2>Admin Dashboard</h2>
+            <button class="btn" onclick="logout()">Logout</button>
+        </div>
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>Teams Overview</h3>
+                <div id="teams-overview"></div>
+            </div>
+            <div class="dashboard-card">
+                <h3>Vacancies</h3>
+                <div id="vacancies"></div>
+            </div>
+            <div class="dashboard-card">
+                <h3>Candidates</h3>
+                <div id="candidates"></div>
+            </div>
+            <div class="dashboard-card">
+                <h3>Campus Placements</h3>
+                <div id="campus-placements"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="employee-dashboard" class="dashboard">
+        <div class="dashboard-header">
+            <h2>Employee Dashboard</h2>
+            <button class="btn" onclick="logout()">Logout</button>
+        </div>
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>Company Vacancies</h3>
+                <div id="employee-vacancies"></div>
+            </div>
+            <div class="dashboard-card">
+                <h3>Apply for Vacancy</h3>
+                <form id="vacancy-application-form">
+                    <select id="vacancy-select" required>
+                        <option value="">Select a vacancy</option>
+                    </select>
+                    <input type="date" id="interview-date" required>
+                    <input type="submit" value="Apply" class="btn">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Add New Item</h2>
+            <form id="addForm"></form>
+        </div>
+    </div>
+
+    <script>
+        const initialData = {
+    users: [
+        { username: 'admin', password: 'adminpass', role: 'admin' },
+        { username: 'employee', password: 'employeepass', role: 'employee' }
+    ],
+    teams: [
+        { 
+            name: 'Development', 
+            members: 10, 
+            leaves: 2, 
+            projects: [
+                { name: 'Project A', status: 'Ongoing', description: 'Developing a new CRM system' },
+                { name: 'Project B', status: 'Completed', description: 'Website redesign for client X' },
+                { name: 'Project C', status: 'Ongoing', description: 'Mobile app development for startup Y' }
+            ], 
+            leader: 'John Doe' 
+        },
+        { 
+            name: 'Design', 
+            members: 5, 
+            leaves: 1, 
+            projects: [
+                { name: 'Project D', status: 'Ongoing', description: 'UI/UX design for Project A' },
+                { name: 'Project E', status: 'Completed', description: 'Branding for client Z' }
+            ], 
+            leader: 'Jane Smith' 
+        }
+    ],
+    vacancies: [
+        { department: 'IT', position: 'Software Developer', count: 2, description: 'Looking for experienced Java developers' },
+        { department: 'HR', position: 'Recruiter', count: 1, description: 'Seeking a recruiter with 3+ years of experience' }
+    ],
+    candidates: [
+        { name: 'Alice Johnson', status: 'Shortlisted', resume: 'alice_resume.pdf', appliedFor: 'Software Developer' },
+        { name: 'Bob Williams', status: 'Waitlisted', resume: 'bob_resume.pdf', appliedFor: 'Recruiter' },
+        { name: 'Charlie Brown', status: 'Rejected', resume: 'charlie_resume.pdf', appliedFor: 'Software Developer' }
+    ],
+    campusPlacements: [
+        { campus: 'Tech University', studentsSelected: 5, details: '3 for IT, 2 for Design' },
+        { campus: 'Engineering College', studentsSelected: 3, details: '2 for IT, 1 for HR' }
+    ]
+};
+
+// Initialize database
+const initializeDatabase = () => {
+    Object.keys(initialData).forEach(key => {
+        if (!localStorage.getItem(key)) {
+            localStorage.setItem(key, JSON.stringify(initialData[key]));
+        }
+    });
+};
+
+function showLogin(type) {
+    document.getElementById('login-selection').style.display = 'none';
+    document.getElementById(type + '-login').style.display = 'block';
+}
+
+function loginUser(event, role) {
+    event.preventDefault();
+    const username = document.getElementById(role + '-username').value;
+    const password = document.getElementById(role + '-password').value;
+    const users = JSON.parse(localStorage.getItem('users'));
+    const user = users.find(u => u.username === username && u.password === password && u.role === role);
+    if (user) {
+        document.getElementById(role + '-login').style.display = 'none';
+        document.getElementById(role + '-dashboard').style.display = 'block';
+        if (role === 'admin') {
+            loadAdminDashboard();
+        } else {
+            loadEmployeeDashboard();
+        }
+    } else {
+        alert('Invalid credentials');
+    }
+}
+
+function logout() {
+    document.getElementById('admin-dashboard').style.display = 'none';
+    document.getElementById('employee-dashboard').style.display = 'none';
+    document.getElementById('login-selection').style.display = 'block';
+}
+
+function loadAdminDashboard() {
+    loadTeamsOverview();
+    loadVacancies();
+    loadCandidates();
+    loadCampusPlacements();
+}
+
+function loadTeamsOverview() {
+    const teams = JSON.parse(localStorage.getItem('teams'));
+    let html = '<table><tr><th>Team</th><th>Members</th><th>Leaves</th><th>Projects</th><th>Leader</th><th>Details</th></tr>';
+    teams.forEach((team, index) => {
+        html += `<tr>
+            <td>${team.name}</td>
+            <td>${team.members}</td>
+            <td>${team.leaves}</td>
+            <td>${team.projects.length}</td>
+            <td>${team.leader}</td>
+            <td><button onclick="showProjectDetails(${index})">View</button></td>
+        </tr>`;
+    });
+    html += '</table>';
+    teams.forEach((team, index) => {
+        html += `<div id="project-details-${index}" class="project-details" style="display:none;">
+            <h4>${team.name} Projects</h4>
+            <ul>
+                ${team.projects.map(project => `<li>${project.name} - ${project.status}: ${project.description}</li>`).join('')}
+            </ul>
+        </div>`;
+    });
+    document.getElementById('teams-overview').innerHTML = html;
+}
+
+function showProjectDetails(teamIndex) {
+    const detailsDiv = document.getElementById(`project-details-${teamIndex}`);
+    if (detailsDiv.style.display === 'none') {
+        detailsDiv.style.display = 'block';
+    } else {
+        detailsDiv.style.display = 'none';
+    }
+}
+
+function loadVacancies() {
+    const vacancies = JSON.parse(localStorage.getItem('vacancies'));
+    let html = '<table><tr><th>Department</th><th>Position</th><th>Count</th><th>Details</th></tr>';
+    vacancies.forEach((vacancy, index) => {
+        html += `<tr>
+            <td>${vacancy.department}</td>
+            <td>${vacancy.position}</td>
+            <td>${vacancy.count}</td>
+            <td><button onclick="showVacancyDetails(${index})">View Details</button></td>
+        </tr>`;
+    });
+    html += '</table>';
+    vacancies.forEach((vacancy, index) => {
+        html += `<div id="vacancy-details-${index}" class="vacancy-details" style="display:none;">
+            <h4>${vacancy.position} in ${vacancy.department}</h4>
+            <p>${vacancy.description}</p>
+        </div>`;
+    });
+    document.getElementById('vacancies').innerHTML = html;
+}
+
+function showVacancyDetails(vacancyIndex) {
+    const detailsDiv = document.getElementById(`vacancy-details-${vacancyIndex}`);
+    if (detailsDiv.style.display === 'none') {
+        detailsDiv.style.display = 'block';
+    } else {
+        detailsDiv.style.display = 'none';
+    }
+}
+
+function loadCandidates() {
+    const candidates = JSON.parse(localStorage.getItem('candidates'));
+    let html = '<table><tr><th>Name</th><th>Status</th><th>Applied For</th><th>Resume</th></tr>';
+    candidates.forEach(candidate => {
+        html += `<tr>
+            <td>${candidate.name}</td>
+            <td>${candidate.status}</td>
+            <td>${candidate.appliedFor}</td>
+            <td><a href="${candidate.resume}" target="_blank">View Resume</a></td>
+        </tr>`;
+    });
+    html += '</table>';
+    document.getElementById('candidates').innerHTML = html;
+}
+
+function loadCampusPlacements() {
+    const placements = JSON.parse(localStorage.getItem('campusPlacements'));
+    let html = '<table><tr><th>Campus</th><th>Students Selected</th><th>Details</th></tr>';
+    placements.forEach(placement => {
+        html += `<tr>
+            <td>${placement.campus}</td>
+            <td>${placement.studentsSelected}</td>
+            <td>${placement.details}</td>
+        </tr>`;
+    });
+    html += '</table>';
+    document.getElementById('campus-placements').innerHTML = html;
+}
+
+function loadEmployeeDashboard() {
+    const vacancies = JSON.parse(localStorage.getItem('vacancies'));
+    let html = '<table><tr><th>Department</th><th>Position</th><th>Count</th></tr>';
+    vacancies.forEach(vacancy => {
+        html += `<tr>
+            <td>${vacancy.department}</td>
+            <td>${vacancy.position}</td>
+            <td>${vacancy.count}</td>
+        </tr>`;
+    });
+    html += '</table>';
+    document.getElementById('employee-vacancies').innerHTML = html;
+
+    // Populate vacancy select options
+    const selectElement = document.getElementById('vacancy-select');
+    selectElement.innerHTML = '<option value="">Select a vacancy</option>';
+    vacancies.forEach((vacancy, index) => {
+        selectElement.innerHTML += `<option value="${index}">${vacancy.position} - ${vacancy.department}</option>`;
+    });
+
+    // Set up form submission
+    document.getElementById('vacancy-application-form').onsubmit = function(event) {
+        event.preventDefault();
+        const vacancyIndex = document.getElementById('vacancy-select').value;
+        const interviewDate = document.getElementById('interview-date').value;
+        if (vacancyIndex && interviewDate) {
+            alert(`Application submitted for ${vacancies[vacancyIndex].position}. Interview scheduled for ${interviewDate}`);
+            this.reset();
+        } else {
+            alert('Please select a vacancy and interview date');
+        }
+    };
+}
+
+function showAddModal(type) {
+    const modal = document.getElementById('addModal');
+    const form = document.getElementById('addForm');
+    const title = document.getElementById('modalTitle');
+    
+    // Clear previous form
+    form.innerHTML = '';
+
+    // Set up form based on type
+    switch(type) {
+        case 'team':
+            title.textContent = 'Add New Team';
+            form.innerHTML = `
+                <input type="text" id="teamName" placeholder="Team Name" required>
+                <input type="number" id="teamMembers" placeholder="Number of Members" required>
+                <input type="text" id="teamLeader" placeholder="Team Leader" required>
+                <button type="submit">Add Team</button>
+            `;
+            form.onsubmit = addTeam;
+            break;
+        case 'vacancy':
+            title.textContent = 'Add New Vacancy';
+            form.innerHTML = `
+                <input type="text" id="vacancyDepartment" placeholder="Department" required>
+                <input type="text" id="vacancyPosition" placeholder="Position" required>
+                <input type="number" id="vacancyCount" placeholder="Number of Vacancies" required>
+                <textarea id="vacancyDescription" placeholder="Description" required></textarea>
+                <button type="submit">Add Vacancy</button>
+            `;
+            form.onsubmit = addVacancy;
+            break;
+        case 'candidate':
+            title.textContent = 'Add New Candidate';
+            form.innerHTML = `
+                <input type="text" id="candidateName" placeholder="Candidate Name" required>
+                <input type="text" id="candidateStatus" placeholder="Status" required>
+                <input type="text" id="candidateResume" placeholder="Resume Link" required>
+                <input type="text" id="candidateAppliedFor" placeholder="Applied For" required>
+                <button type="submit">Add Candidate</button>
+            `;
+            form.onsubmit = addCandidate;
+            break;
+        case 'campus':
+            title.textContent = 'Add New Campus Placement';
+            form.innerHTML = `
+                <input type="text" id="campusName" placeholder="Campus Name" required>
+                <input type="number" id="studentsSelected" placeholder="Students Selected" required>
+                <input type="text" id="placementDetails" placeholder="Placement Details" required>
+                <button type="submit">Add Campus Placement</button>
+            `;
+            form.onsubmit = addCampusPlacement;
+            break;
+    }
+
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('addModal').style.display = 'none';
+}
+function addTeam(event) {
+    event.preventDefault();
+    const teams = JSON.parse(localStorage.getItem('teams'));
+    teams.push({
+        name: document.getElementById('teamName').value,
+        members: parseInt(document.getElementById('teamMembers').value),
+        leaves: 0,
+        projects: [],
+        leader: document.getElementById('teamLeader').value
+    });
+    localStorage.setItem('teams', JSON.stringify(teams));
+    loadTeamsOverview();
+    closeModal();
+}
+
+function addVacancy(event) {
+    event.preventDefault();
+    const vacancies = JSON.parse(localStorage.getItem('vacancies'));
+    vacancies.push({
+        department: document.getElementById('vacancyDepartment').value,
+        position: document.getElementById('vacancyPosition').value,
+        count: parseInt(document.getElementById('vacancyCount').value),
+        description: document.getElementById('vacancyDescription').value
+    });
+    localStorage.setItem('vacancies', JSON.stringify(vacancies));
+    loadVacancies();
+    closeModal();
+}
+
+function addCandidate(event) {
+    event.preventDefault();
+    const candidates = JSON.parse(localStorage.getItem('candidates'));
+    candidates.push({
+        name: document.getElementById('candidateName').value,
+        status: document.getElementById('candidateStatus').value,
+        resume: document.getElementById('candidateResume').value,
+        appliedFor: document.getElementById('candidateAppliedFor').value
+    });
+    localStorage.setItem('candidates', JSON.stringify(candidates));
+    loadCandidates();
+    closeModal();
+}
+
+function addCampusPlacement(event) {
+    event.preventDefault();
+    const placements = JSON.parse(localStorage.getItem('campusPlacements'));
+    placements.push({
+        campus: document.getElementById('campusName').value,
+        studentsSelected: parseInt(document.getElementById('studentsSelected').value),
+        details: document.getElementById('placementDetails').value
+    });
+    localStorage.setItem('campusPlacements', JSON.stringify(placements));
+    loadCampusPlacements();
+    closeModal();
+}
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDatabase();
+    
+    // Set up login buttons
+    document.querySelector('button[onclick="showLogin(\'admin\')"]').addEventListener('click', () => showLogin('admin'));
+    document.querySelector('button[onclick="showLogin(\'employee\')"]').addEventListener('click', () => showLogin('employee'));
+    
+    // Set up login forms
+    document.querySelector('form[onsubmit="return loginUser(event, \'admin\')"]').addEventListener('submit', (event) => loginUser(event, 'admin'));
+    document.querySelector('form[onsubmit="return loginUser(event, \'employee\')"]').addEventListener('submit', (event) => loginUser(event, 'employee'));
+    
+    // Set up logout buttons
+    document.querySelectorAll('button[onclick="logout()"]').forEach(button => {
+        button.addEventListener('click', logout);
+    });
+
+    // Set up modal close button
+    document.querySelector('.close').addEventListener('click', closeModal);
+});
+    </script>
+</body>
+</html>
